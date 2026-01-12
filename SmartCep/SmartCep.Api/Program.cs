@@ -1,7 +1,14 @@
+using SmartCep.Application.UseCases;
+using SmartCep.Domain.Interfaces;
+using SmartCep.Infrastructure.ExternalServices.ViaCep;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
+builder.Services.AddHttpClient<ICodeProvider, ViaCepProvider>();
+
+builder.Services.AddScoped<SearchCodeUseCase>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
