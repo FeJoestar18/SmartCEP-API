@@ -1,14 +1,27 @@
+using Microsoft.EntityFrameworkCore;
 using SmartCep.Application.UseCases;
 using SmartCep.Domain.Interfaces;
-using SmartCep.Infrastructure.ExternalServices.ViaCep;
+using SmartCep.Infrastructure.Persistence;
+using SmartCep.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Database
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 40))
+    )
+);
+
+// Repositories
+builder.Services.AddScoped<ICodeRepository, CodeRepository>();
+
+// UseCases
+builder.Services.AddScoped<SearchCodeFromDatabaseUseCase>();
+
 // Controllers
 builder.Services.AddControllers();
-builder.Services.AddHttpClient<ICodeProvider, ViaCepProvider>();
-
-builder.Services.AddScoped<SearchCodeUseCase>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

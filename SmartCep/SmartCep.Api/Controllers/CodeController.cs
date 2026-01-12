@@ -5,21 +5,14 @@ namespace SmartCep.Api.Controllers;
 
 [ApiController]
 [Route("api/cep")]
-public class CepController : ControllerBase
+public class CepController(SearchCodeFromDatabaseUseCase useCase) : ControllerBase
 {
-    private readonly SearchCodeUseCase _useCase;
-
-    public CepController(SearchCodeUseCase useCase)
-    {
-        _useCase = useCase;
-    }
-
     [HttpGet("{cep}")]
     public async Task<IActionResult> Get([FromRoute] string cep)
     {
         try
         {
-            var resultado = await _useCase.ExecuteAsync(cep);
+            var resultado = await useCase.ExecuteAsync(cep);
 
             if (resultado is null)
                 return NotFound(new { message = "CEP não Encontrado" });
